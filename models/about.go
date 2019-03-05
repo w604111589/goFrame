@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 	"github.com/astaxie/beego/orm"
-	"gotest/myprojectapi/models/entity"
+	"goFrame/models/entity"
 	"strconv"
 )
 

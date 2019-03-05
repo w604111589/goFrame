@@ -3,9 +3,9 @@ package controllers
 import (
 	"fmt"
 	"github.com/garyburd/redigo/redis"
-	"gotest/myprojectapi/models"
-	"gotest/myprojectapi/models/common"
-	"gotest/myprojectapi/models/entity"
+	"goFrame/models"
+	"goFrame/models/common"
+	"goFrame/models/entity"
 
 	"github.com/astaxie/beego"
 )

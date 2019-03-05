@@ -9,13 +9,15 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
-	"myprojectapi/controllers/own"
+	"goFrame/controllers/own"
+	"goFrame/controllers"
 )
 
 
 func init() {
 	ns := beego.NewNamespace("/otc",
 		beego.NSAutoRouter(&own.UserController{}),
+		beego.NSAutoRouter(&controllers.ChatController{}),
 	)
 	beego.AddNamespace(ns)
 }

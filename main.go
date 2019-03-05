@@ -8,6 +8,7 @@ import (
 	"myprojectapi/models/common"
 	_ "myprojectapi/routers"
 	"strings"
+	"time"
 )
 
 
@@ -35,12 +36,13 @@ func main() {
 	}
 	//beego.BConfig.WebConfig.Session.SessionOn = true
 	//获取当前的日期（月、日）
-	//fileName := time.Now().Format("0102")
-	//common.GetCurrentDirectory()
-	//beego.SetLevel(beego.LevelInformational)
-	//beego.SetLogger("file", `{"filename":"logs/info`+fileName+`.log"}`)
-	//beego.SetLogFuncCall(true)
-	//beego.Notice("this is a notice information")
+	fileName := time.Now().Format("0102")
+	
+	common.GetCurrentDirectory()
+	beego.SetLevel(beego.LevelInformational)
+	beego.SetLogger("file", `{"filename":"logs/info`+fileName+`.log"}`)
+	beego.SetLogFuncCall(true)
+	beego.Notice("this is a notice information")
 	beego.Run()
 }
 
