@@ -2,7 +2,6 @@
 package controllers
 
 import (
-	"log"
 	"github.com/gorilla/websocket"
 	"github.com/satori/go.uuid"
 	"goFrame/models"
@@ -14,11 +13,18 @@ type ChatController struct{
 
 var upgrader = websocket.Upgrader{}
 
+func (c *ChatController) Test(){
+	fmt.Println("22222222222222222")
+	u.Data["json"] = common.SuccessMsg("请求成功")
+	u.ServeJSON()
+}
+
 func  (c *ChatController) Ws()  {
+	fmt.Println("3123")
 
 	conn, err := upgrader.Upgrade(c.Ctx.ResponseWriter, c.Ctx.Request, nil)
     	if err != nil {
-        log.Fatal(err)
+        beego.Error(err)
     	}
 
 	userId := c.getString("userId","0")

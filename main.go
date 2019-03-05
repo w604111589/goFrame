@@ -42,7 +42,7 @@ func main() {
 	beego.SetLevel(beego.LevelInformational)
 	beego.SetLogger("file", `{"filename":"logs/info`+fileName+`.log"}`)
 	beego.SetLogFuncCall(true)
-	beego.Notice("this is a notice information")
+	beego.Notice("this is a notice information111")
 	beego.Run()
 }
 

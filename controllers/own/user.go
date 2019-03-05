@@ -3,8 +3,8 @@ package own
 import (
 	"fmt"
 	"github.com/astaxie/beego"
-	"myprojectapi/models/common"
-	"myprojectapi/models/own"
+	"goFrame/models/common"
+	"goFrame/models/own"
 )
 
 // Operations about Users

@@ -15,9 +15,11 @@ import (
 
 
 func init() {
-	ns := beego.NewNamespace("/otc",
-		beego.NSAutoRouter(&own.UserController{}),
-		beego.NSAutoRouter(&controllers.ChatController{}),
-	)
-	beego.AddNamespace(ns)
+	// ns := beego.NewNamespace("/otc",
+	// 	beego.NSAutoRouter(&own.UserController{}),
+	// 	beego.NSAutoRouter(&controllers.ChatController{}),
+	// )
+	// beego.AddNamespace(ns)
+	beego.AutoRouter(&own.UserController{}))
+	beego.AutoRouter(&controllers.ChatController{})
 }
