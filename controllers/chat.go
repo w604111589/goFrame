@@ -2,8 +2,12 @@
 package controllers
 
 import (
+	"github.com/astaxie/beego"
 	"github.com/gorilla/websocket"
 	"github.com/satori/go.uuid"
+	"net/http"
+	"goFrame/models/common"
+	"fmt"
 	"goFrame/models"
 )
 
@@ -11,35 +15,26 @@ type ChatController struct{
 	beego.Controller
 }
 
-var upgrader = websocket.Upgrader{}
+var upgrader = websocket.Upgrader{CheckOrigin:func(r *http.Request) bool{return true}}
+
 
 func (c *ChatController) Test(){
 	fmt.Println("22222222222222222")
-	u.Data["json"] = common.SuccessMsg("请求成功")
-	u.ServeJSON()
+	c.Data["json"] = common.SuccessMsg("请求成功")
+	c.ServeJSON()
 }
 
 func  (c *ChatController) Ws()  {
-	fmt.Println("3123")
+	userId := c.GetString("userId","0")
 
 	conn, err := upgrader.Upgrade(c.Ctx.ResponseWriter, c.Ctx.Request, nil)
     	if err != nil {
         beego.Error(err)
     	}
-
-	userId := c.getString("userId","0")
-
-	if error != nil {
-		http.NotFound(res, req)
-		return
-	}
+	fmt.Println("连接已建立，用户ID为：",userId)
 	newV4,_ := uuid.NewV4()
-	fmt.Println("V4:",newV4.String())
-	client := &Client{id: newV4.String(),userId:userId , socket: conn, send: make(chan []byte)}
 
-	manager.register <- client
+	models.WsHandler(newV4.String(),userId,conn)
 
-	go client.read()
-	go client.write()
 	
 }

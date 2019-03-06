@@ -4,16 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
-	"net/http"
-	"strconv"
+	// "net/http"
+	// "strconv"
+	"time"
 )
-
-// func main(){
-// 	fmt.Println("Starting application...")
-// 	go manager.start()
-// 	http.HandleFunc("/ws",wsHandler)
-// 	http.ListenAndServe("localhost:12345",nil)
-// }
 
 
 type Client struct{
@@ -35,7 +29,27 @@ type ClientManager struct {
 	broadcast  chan []byte
 	register   chan *Client
 	unregister chan *Client
-	ptp        chan mess
+	// ptp        chan mess
+}
+var manager = ClientManager{
+	broadcast:  make(chan []byte),
+	register:   make(chan *Client),
+	unregister: make(chan *Client),
+	clients:    make(map[*Client]bool),
+	// ptp:    	  make(chan mess),
+}
+
+func init(){
+	go manager.start()
+	go manager.broast()
+}
+
+func (manager *ClientManager) broast(){
+	for {
+		time.Sleep(10*time.Second)
+		manager.broadcast <- []byte("我是广播消息")
+		
+	}
 }
 
 
@@ -53,13 +67,13 @@ func (manager *ClientManager) start() {
 				jsonMessage, _ := json.Marshal(&Message{Content: "/A socket has disconnected."})
 				manager.send(jsonMessage, conn)
 			}
-		case message := <-manager.ptp:
-			for conn := range manager.clients{
-				if strconv.Itoa(message.SendId) == conn.userId || strconv.Itoa(message.RecvId) == conn.userId {
-					jsonMessage,_ :=json.Marshal(message)
-					conn.send <- jsonMessage
-				}
-			}
+		// case message := <-manager.ptp:
+		// 	for conn := range manager.clients{
+		// 		if strconv.Itoa(message.SendId) == conn.userId || strconv.Itoa(message.RecvId) == conn.userId {
+		// 			jsonMessage,_ :=json.Marshal(message)
+		// 			conn.send <- jsonMessage
+		// 		}
+		// 	}
 
 		case message := <-manager.broadcast:
 			for conn := range manager.clients {
@@ -83,13 +97,7 @@ func (manager *ClientManager) send(message []byte, ignore *Client) {
 }
 
 
-var manager = ClientManager{
-	broadcast:  make(chan []byte),
-	register:   make(chan *Client),
-	unregister: make(chan *Client),
-	clients:    make(map[*Client]bool),
-	ptp:    	make(chan mess),
-}
+
 
 
 type mess struct {
@@ -100,7 +108,7 @@ type mess struct {
 	Time    string
 }
 
-func (c *Client) read() {
+func (c *Client) Read() {
 	defer func() {
 		manager.unregister <- c
 		c.socket.Close()
@@ -115,19 +123,22 @@ func (c *Client) read() {
 		}
 		var messes mess
 		json.Unmarshal(message,&messes)
-		if messes.RecvId == 0 {
-			fmt.Println("broadcast")
-			jsonMessage, _ := json.Marshal(&Message{Sender: c.id, Content: string(message)})
-			manager.broadcast <- jsonMessage
-		}else {
-			fmt.Println("other")
-			manager.ptp <- messes
-		}
+		fmt.Println("broadcast")
+		jsonMessage, _ := json.Marshal(&Message{Sender: c.id, Content: string(message)})
+		manager.broadcast <- jsonMessage
+		// if messes.RecvId == 0 {
+		// 	fmt.Println("broadcast")
+		// 	jsonMessage, _ := json.Marshal(&Message{Sender: c.id, Content: string(message)})
+		// 	manager.broadcast <- jsonMessage
+		// }else {
+		// 	fmt.Println("other")
+		// 	manager.ptp <- messes
+		// }
 
 	}
 }
 
-func (c *Client) write() {
+func (c *Client) Write() {
 	defer func() {
 		c.socket.Close()
 	}()
@@ -135,6 +146,7 @@ func (c *Client) write() {
 	for {
 		select {
 		case message, ok := <-c.send:
+			fmt.Println("写入信息：",string(message))
 			if !ok {
 				c.socket.WriteMessage(websocket.CloseMessage, []byte{})
 				return
@@ -143,4 +155,13 @@ func (c *Client) write() {
 			c.socket.WriteMessage(websocket.TextMessage, message)
 		}
 	}
+}
+
+func WsHandler(id,userId string,conn *websocket.Conn){
+
+	client := &Client{id: id,userId:userId , socket: conn, send: make(chan []byte)}
+	manager.register <- client
+	
+	go client.Read()
+	go client.Write()
 }

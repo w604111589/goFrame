@@ -37,6 +37,11 @@ func (o *AboutController) GetAboutOne() {
 	o.ServeJSON()
 }
 
+func (o *AboutController) Test(){
+	o.Data["json"] = common.SuccessMsg("请求成功")
+	o.ServeJSON()
+}
+
 func (o *AboutController) GetFAgentOne() {
 	id,_ := o.GetInt("id")
 	beego.Notice("this is a fagentone information")

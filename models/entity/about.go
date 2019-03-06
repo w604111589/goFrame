@@ -1,10 +1,8 @@
 package entity
 
 import (
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	"reflect"
 )
 
 var (

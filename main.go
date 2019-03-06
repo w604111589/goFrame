@@ -5,10 +5,11 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
-	"myprojectapi/models/common"
-	_ "myprojectapi/routers"
+	"goFrame/models/common"
+	_ "goFrame/routers"
 	"strings"
 	"time"
+	_ "goFrame/models"
 )
 
 

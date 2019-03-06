@@ -9,8 +9,8 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
-	"goFrame/controllers/own"
 	"goFrame/controllers"
+	"goFrame/controllers/own"
 )
 
 
@@ -20,6 +20,7 @@ func init() {
 	// 	beego.NSAutoRouter(&controllers.ChatController{}),
 	// )
 	// beego.AddNamespace(ns)
-	beego.AutoRouter(&own.UserController{}))
+	beego.AutoRouter(&own.UserController{})
 	beego.AutoRouter(&controllers.ChatController{})
+	beego.AutoRouter(&controllers.AboutController{})
 }
